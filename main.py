@@ -1,5 +1,7 @@
 from flask import Flask
  
+def registrar_transacoes():
+    entradas = []
     saidas = []
 
     print("=== CONTROLE DE FINANÇAS ESTUDANTIS ===")
