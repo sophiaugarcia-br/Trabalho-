@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel = "stylesheet" href="site.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
     <title>Seu mais novo gerenciador de finanças</title>
 </head>
 
@@ -13,10 +14,42 @@
         <h1>Finant</h1>
     </div>
     <h2>Sua mais nova ferramenta de gerenciamento de finanças</h2>
-    <picture>
-        <source media="(min-width:650px)" srcset="img/chart2.png">
-        <img src="img/chart2.png" alt="grafico atrator">
-    </picture>
 
+    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+
+    <script>
+    const xValues = ["Moradia", "Alimentação", "Transporte", "Lazer", "Outros"];
+    const yValues = [55, 49, 44, 24, 15];
+    const barColors = [
+    "#b91d47",
+    "#00aba9",
+    "#2b5797",
+    "#e8c3b9",
+    "#1e7145"
+    ];
+
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+    type: "doughnut",
+    data: {
+        labels: xValues,
+        datasets: [{
+        backgroundColor: barColors,
+        data: yValues
+        }]
+    },
+    options: {
+        plugins: {
+        legend: {display:true},
+        title: {
+            display: true,
+            text: "Suas finanças pessoais - conosco",
+            font: {size:16}
+        }
+        }
+    }
+    });
+    </script>
 </body>
 </html>
