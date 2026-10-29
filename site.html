@@ -16,15 +16,24 @@
     <h2>Sua mais nova ferramenta de gerenciamento de finanças</h2>
    <main class="menu">   
         <div class="cards">
-            <section class="balance-card">
-                <div class="balance-text">
-                    <p class="balance-wallet">Minha Carteira</p>
-                    <p class="saldo">Saldo Atual</p>
-                </div>
-            </section>
+            <div class="left-column">
+                <section class="balance-card">
+                    <div class="balance-text">
+                        <p class="balance-wallet">Minha Carteira</p>
+                        <p class="saldo">Saldo Atual</p>
+                        <p class="money">R$ 500</p>
+                        <p class="varia">Úlitmos 7 dias: +R$60</p>
+                    </div>
+            </div>
+                </section>
             <section class="chart-card">
                 <div class="chart-box">
                     <canvas id="myChart"></canvas>
+                </div>
+            </section>
+            <section class="side-card">
+                <div class="side-box">
+                    <p class="transactions">Transações</p>
                 </div>
             </section>
         </div>
@@ -57,7 +66,7 @@
                 }
             }
         });
-        </script>>
+        </script>
     </main> 
 </body>
 </html>

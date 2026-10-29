@@ -4,10 +4,22 @@
     box-sizing: border-box;
 }
 
-body{
+body {
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #121212
+    background-color: #0d0714;
 }
+
+h1 {
+    font-family: sans-serif;
+}
+
+h2 {
+    padding: 10px;
+    margin-top: 20px;
+    color: #f5f5f5;
+    margin-left: 20px;
+}
+
 
 @keyframes deslizarEAnimar {
     0% {
@@ -24,15 +36,13 @@ body{
     }
 }
 
-.container{
+.container {
     display: flex;
     justify-content: flex-start;
-    padding: 10px;
-    padding-bottom: 30px;
+    padding: 10px 10px 30px 10px;
     gap: 10px;
     animation: deslizarEAnimar 1s ease forwards;
     background-color: rgb(243, 240, 240);
-    
 }
 
 .container h1:first-child {
@@ -45,36 +55,42 @@ body{
     color: #f5f5f5;
 }
 
-h1 {
-    font-family: sans-serif;
-}
-
-h2 {
-    padding: 10px;
-    margin-top: 10px;
-    color: #f5f5f5;
-}
-
 .cards {
     display: grid;
-    max-width: 940vw;
-    margin: 0 auto;
-    gap: 5px;
-    grid-auto-rows: minmax(100px, auto);
-    grid-template-columns: repeat(3, 1fr);
+    max-width: 1400px;
+    margin: 50px auto 0 auto;
+    gap: 20px; 
+    grid-template-columns: 900px 400px;
+    grid-template-rows: auto auto;
+    justify-content: center;
+    align-items: stretch;
+}
+
+
+.balance-card,
+.chart-card,
+.side-card { 
+    background-color: #160f22;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    padding: 20px 0 40px 0;
+    width: 400px; 
+}
+
+.balance-card {
+    height: 500px;
+    display: grid;
+    justify-content: center;
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    margin-top: 50px;
+    width: 100%;
 }
 
 .chart-card {
-    background-color: #1E1E1E;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    padding-bottom: 40px;
-    padding-top: 20px;
-    margin-left: 100px;
-    max-width: 830px;
-    width: 800px;
-    grid-column: 0 / 3;
+    grid-column: 1 / 4;
     grid-row: 3 / 4;
+    width: 99%;
 }
 
 .chart-box {
@@ -82,21 +98,12 @@ h2 {
     height: 500px;       
 }
 
-.balance-card {
-    background-color: #1E1E1E;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    padding-bottom: 40px;
-    padding-top: 20px;
-    max-width: 830px;
-    height: 500px;
-    display: grid;
+.side-card {
+    display: flex;
     justify-content: center;
-    grid-column: 0 / 3;
-    grid-row: 1 / 2;
-    width: 800px;
-    margin-left: 100px;
-    margin-top: 50px;
+    max-width: 1400px;
+    margin: 50px auto 0 auto;
+    gap: 20px;
 }
 
 .balance-text {
@@ -104,18 +111,10 @@ h2 {
     width: 100%;
 }
 
-.balance-wallet {
-    color: #f5f5f5;
-    padding-left: 30px;
-    padding-top: 10px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    
-}
-
+.money,
+.varia,
+.transactions,
+.balance-wallet,
 .saldo {
     color: #f5f5f5;
     text-align: center;
@@ -124,4 +123,21 @@ h2 {
     font-family: Arial, Helvetica, sans-serif;
     margin-left: auto;
     margin-right: auto;
+}
+
+.transactions {
+    font-weight: bold;
+}
+
+.balance-wallet {
+    font-weight: bold;
+}
+
+.money {
+    margin-top: 100px;
+    font-size: 100px;
+}
+
+.varia {
+    margin-top: 140px;
 }
