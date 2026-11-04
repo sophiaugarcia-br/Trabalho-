@@ -1,4 +1,4 @@
-from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+from Decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 def arredondar_centavos(valor: Decimal) -> int:
     return int(valor.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
@@ -10,7 +10,7 @@ def para_centavos(texto) -> int:
   try:
     valor= decimal(limpo)
   except InvalidOperation:
-    raise ValurError (f'Valor inválido: {texto!r}')
+    raise ValueError (f'Valor inválido: {texto!r}')
   return arredondar_centavos(valor * 100)
 
 
