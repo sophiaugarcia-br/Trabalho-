@@ -10,7 +10,6 @@ from financas.servicos.resumo_service import (
 HOJE = date(2026, 11, 12)
 
 class RepoFalso:
-    """Imita o repositório real, guardando tudo em memória."""
     def __init__(self, transacoes=()):
         self.transacoes = list(transacoes)
         self.inseridos = []
@@ -45,7 +44,7 @@ def repo():
     ])
 
 def test_resumo_vai_so_ate_hoje(repo):
-    r = resumo_mes(repo, 2026, 11, HOJE)       # o lançamento do dia 20 ainda não conta
+    r = resumo_mes(repo, 2026, 11, HOJE)      
     assert r.entradas_centavos == 100000
     assert r.saidas_centavos == 30000
     assert r.saldo_centavos == 70000
