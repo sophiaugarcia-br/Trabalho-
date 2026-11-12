@@ -14,3 +14,6 @@ def formatar_brl(centavos):
     texto = f"{reais:,}".replace(",", ".") + f",{resto:02d}"
     sinal = "-" if para_centavos < 0 else ""
     return f"{sinal}R$ {texto}"
+
+def dividir_centavos(centavos, divisor):
+    return (2 * centavos + divisor) // (2 * divisor)
