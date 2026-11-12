@@ -1,0 +1,12 @@
+# Ambiente virtual e cache do Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Configurações locais do PyCharm
+.idea/
+
+# Banco de dados e PDFs gerados localmente nos testes
+dados/*.db
+relatorios/*.pdf
