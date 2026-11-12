@@ -1,6 +1,6 @@
 from Decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 
-def centavos(texto):
+def para_centavos(texto):
     limpo = texto.strip().replace("R$", "").replace(" ", "")
     limpo = limpo.replace(".","").replace(",", ".")
     try:
@@ -10,7 +10,7 @@ def centavos(texto):
     return int((valor*100).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 def formatar_brl(centavos):
-    reais, resto = divmod(abs(centavos), 100)
+    reais, resto = divmod(abs(para_centavos), 100)
     texto = f"{reais:,}".replace(",", ".") + f",{resto:02d}"
-    sinal = "-" if centavos < 0 else ""
+    sinal = "-" if para_centavos < 0 else ""
     return f"{sinal}R$ {texto}"
