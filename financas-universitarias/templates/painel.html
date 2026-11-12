@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<h2>Sua mais nova ferramenta de gerenciamento de finanças</h2>
+
+<div class="left-column">
+    <section class="balance-card">
+        <div class="balance-text">
+            <p class="balance-wallet">Minha Carteira</p>
+            <p class="saldo">Saldo Atual</p>
+            <p class="money">R$ {{ "%.2f"|format(resumo['saldo']) }}</p>
+            <p class="varia">Receitas: R$ {{ "%.2f"|format(resumo['receitas']) }} | Despesas: R$ {{ "%.2f"|format(resumo['despesas']) }}</p>
+        </div>
+    </section>
+
+    <section class="chart-card">
+        <div class="chart-box">
+            <canvas id="myChart"></canvas>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
+<script> 
+const labels = {{ chart_labels | tojson }};
+    const values = {{ chart_values | tojson }};
+
+    const colors = ["#b91d47", "#00aba9", "#2b5797", "#e8c3b9", "#1e7145", "#f39c12", "#9b59b6"];
+
+    new Chart(document.getElementById("myChart"), {
+        type: "doughnut",
+        data: {
+            labels: labels.length > 0 ? labels : ["Sem Despesas"],
+            datasets: [{ 
+                backgroundColor: colors, 
+                data: values.length > 0 ? values : [1] 
+            }]
+        },
+        options: {
+            maintainAspectRatio: false, 
+            plugins: {
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: "Despesas por Categoria",
+                    font: { size: 16 }
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}
