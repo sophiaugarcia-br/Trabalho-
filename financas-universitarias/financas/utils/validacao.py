@@ -1,36 +1,42 @@
 
 from datetime import datetime
-from typing import Any, Dict, List
+from financas.utils.dinheiro import centavos
+TIPOS_VALIDOS = ("ENTRADA", "SAIDA")
 
-def validar_formulario(dados: Dict[str, Any]) -> List[str]:
+def validar_obrigatorio(texto, campo):
+    if texto is None or not str(texto).strip():
+        return [f"{campo} é obrigatório."]
+    return []
+
+def validar_valor(texto, campo="Valor"):
+    erros = validar_obrigatorio(texto, campo)
+    if erros:
+        return erros
+    try:
+        centavos = para_centavos(str(texto))
+    except ValueError:
+        return [f"{campo} inválido."]
+    if centavos <= 0:
+        return [f"{campo} deve ser maior que zero."]
+    return []
+
+def validar_data(texto, campo="Data"):
+    erros = validar_obrigatorio(texto, campo)
+    if erros:
+        return erros
+    try:
+        datetime.strptime(str(texto), "%Y"-%m-%d")
+    except ValueError:
+        return [f"{campo} inválida (use AAAA-MM-DD)."]
+    return []
+
+def validar_lancamento(dados):
+    """Valida um lançamento inteiro (dicionário do formulário)."""
     erros = []
-    campos_obrigatorios = ["descricao", "valor", "data"]
-    for campo in campos_obrigatorios:
-        valor_campo = dados.get(campo)
-        if valor_campo is None or str(valor_campo).strip() == "":
-            erros.append(f"O campo '{campo}' é obrigatório.")
-          
-    if "valor" in dados and dados["valor"] is not None and str(dados["valor"]).strip() != "":
-        try:
-            valor_numerico = float(dados["valor"])
-            if valor_numerico <= 0:
-                erros.append("O campo 'valor' deve ser maior que zero.")
-        except (ValueError, TypeError):
-            erros.append("O campo 'valor' deve ser um número válido.")
-          
-    if "data" in dados and dados["data"] is not None and str(dados["data"]).strip() != "":
-        data_str = str(dados["data"]).strip()
-        data_valida = False
-        
-        for formato in ("%Y-%m-%d", "%d/%m/%Y"):
-            try:
-                datetime.strptime(data_str, formato)
-                data_valida = True
-                break
-            except ValueError:
-                continue
-                
-        if not data_valida:
-            erros.append("O campo 'data' deve ser uma data válida (formatos aceitos: AAAA-MM-DD ou DD/MM/AAAA).")
-
+    if dados.get("tipo") not in TIPOS_VALIDOS:
+        erros.append("Tipo deve ser ENTRADA ou SAIDA.")
+    erros += validar_obrigatorio(dados.get("descricao"), "Descrição")
+    erros += validar_valor(dados.get("valor"))
+    erros += validar_data(dados.get("data"))
+    erros += validar_obrigatorio(dados.get("categoria_id"), "Categoria")
     return erros
