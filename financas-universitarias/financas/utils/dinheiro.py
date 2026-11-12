@@ -17,3 +17,6 @@ def formatar_brl(centavos):
 
 def dividir_centavos(centavos, divisor):
     return (2 * centavos + divisor) // (2 * divisor)
+
+def arredondar_centavos(valor):
+    return int(valor.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
