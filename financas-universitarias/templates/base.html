@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
+    <title>Seu mais novo gerenciador de finanças</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Seja bem-vindo ao</h1>
+        <h1>Finant</h1>
+        <nav>
+            <a href="{{ url_for('painel.index') }}">Painel</a>
+            <a href="{{ url_for('lancamentos.listar') }}">Lançamentos</a>
+        </nav>
+    </div>
+
+    <main class="menu">
+        {% block conteudo%}
+        {% endblock %}
+    </main>
+
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>
