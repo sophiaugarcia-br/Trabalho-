@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date
 
 @dataclass
-class recorrencia: 
+class Recorrencia: 
     tipo: str
     descricao: str
     valor_centavos: int

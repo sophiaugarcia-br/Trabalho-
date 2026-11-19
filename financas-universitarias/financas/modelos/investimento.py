@@ -3,7 +3,7 @@ from decimal import Decimal
 from datetime import date
 
 @dataclass
-class investimento: 
+class Investimento: 
     nome: str
     valor_inicial_centavos: int
     taxa: Decimal

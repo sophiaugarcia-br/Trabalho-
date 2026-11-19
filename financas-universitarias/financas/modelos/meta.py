@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date
 
 @dataclass
-class meta: 
+class Meta: 
     produto: str
     preco_centavos: int
     criada_em: date
