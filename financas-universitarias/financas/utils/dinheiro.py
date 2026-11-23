@@ -1,4 +1,4 @@
-from Decimal import Decimal, ROUND_HALF_UP, InvalidOperation
+from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 
 def para_centavos(texto):
     limpo = texto.strip().replace("R$", "").replace(" ", "")
