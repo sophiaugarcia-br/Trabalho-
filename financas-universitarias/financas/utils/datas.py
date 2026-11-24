@@ -2,7 +2,7 @@
 import calendar
 from datetime import date 
 
-def inicio_mees(ano, mes):
+def inicio_mes(ano, mes):
   return date(ano, mes,1)
 
 def fim_mes(ano, mes):
