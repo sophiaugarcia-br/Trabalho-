@@ -120,6 +120,23 @@ def deletar_transacao(transacao_id: int) -> None:
     with _conectar() as conn:
         conn.execute("DELETE FROM transacoes WHERE id = ?", (transacao_id,))
 
+def buscar_transacao(transacao_id: int) -> dict | None:
+    with _conectar() as conn:
+        linha = conn.execute(
+            "SELECT * FROM transacoes WHERE id = ?", (transacao_id,)
+        ).fetchone()
+        return dict(linha) if linha else None
+
+def atualizar_transacao(transacao_id: int, categoria_id: int, descricao: str,
+                        valor: float, data: date, tipo: str) -> None:
+    with _conectar() as conn:
+        conn.execute(
+            """UPDATE transacoes
+               SET categoria_id = ?, descricao = ?, valor = ?, data = ?, tipo = ?
+               WHERE id = ?""",
+            (categoria_id, descricao.strip(), valor, data.isoformat(), tipo, transacao_id),
+        )
+
 # CONSULTAS ANALITICAS - DASHBOARD ------------
 
 def resumo_mes_atual() -> dict:
