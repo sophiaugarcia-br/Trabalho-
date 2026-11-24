@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+
+<div class="cards">
+
+    <div class="left-column">
+        <section class="add-card">
+            <h3>Nova Meta</h3>
+            {% for e in erros %}
+                <p class="erro">{{ e }}</p>
+            {% endfor %}
+
+            <form action="{{ url_for('metas.listar') }}" method="POST" class="transaction-form">
+                <input type="text" name="produto" placeholder="Produto" required>
+                <input type="text" name="preco" placeholder="Preço (ex: 1200,00)" required>
+                <input type="date" name="prazo" required>
+                <button type="submit">Adicionar meta</button>
+            </form>
+
+        </section>
+
+        <section class="balance-card">
+            <div class="balance-text">
+                <p class="balance-wallet">Metas abertas</p>
+                <p class="saldo">Total a guardar por mês</p>
+                <p class="money">{{ viab.total_mensal | brl }}</p>
+                <p class="varia">
+                    Sobra média: {{ viab.sobra_media | brl }} |
+                    {% if viab.viavel %}
+                        Cabe no orçamento (folga de {{ viab.folga | brl }})
+                    {% else %}
+                        Acima da sobra em {{ (-viab.folga) | brl }}
+                    {% endif %}
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <section class="side-card">
+        <div class="side-box">
+            <p class="transactions">Lista de desejos</p>
+            <ul class="transaction-list">
+                {% for item in itens %}
+                <li>
+                    <strong>{{ item.meta.produto }}</strong>
+                    ({{ item.meta.guardado_centavos | brl }} de {{ item.meta.preco_centavos | brl }})
+                    <br>
+                    <small>
+                        {% if item.plano.atingida %}
+                            Meta atingida!
+                        {% elif item.plano.vencida %}
+                            Prazo vencido. Faltam {{ item.plano.faltante | brl }}
+                        {% else %}
+                            Até {{ item.meta.prazo.strftime("%d/%m/%Y") }}:
+                            {{ item.plano.por_semana | brl }}/semana ou
+                            {{ item.plano.por_mes | brl }}/mês
+                        {% endif %}
+                    </small>
+
+                    <form action="{{ url_for('metas.aporte', meta_id=item.meta.id) }}" method="POST" class="transaction-form">
+                        <input type="text" name="valor" placeholder="Valor guardado" required>
+                        <button type="submit">Guardar</button>
+                    </form>
+                    <form action="{{ url_for('metas.concluir', meta_id=item.meta.id) }}" method="POST" class="transaction-form">
+                        <button type="submit">Concluir</button>
+                    </form>
+                </li>
+                {% else %}
+                <li>Nenhuma meta cadastrada.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
