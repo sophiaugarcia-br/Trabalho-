@@ -33,6 +33,27 @@
     <section class="side-card">
         <div class="side-box">
             <p class="transactions">Transações</p>
+            <form method="GET" class="transaction-form">
+                <select name="tipo">
+                    <option value="">Todos os tipos</option>
+                    <option value="Receita" {% if filtros.tipo == 'Receita' %}selected{% endif %}>Receitas</option>
+                    <option value="Despesa" {% if filtros.tipo == 'Despesa' %}selected{% endif %}>Despesas</option>
+                </select>
+
+                <select name="categoria">
+                    <option value="">Todas as categorias</option>
+                    {% for cat in categorias %}
+                        <option value="{{ cat['id'] }}" {% if filtros.categoria == cat['id'] %}selected{% endif %}>
+                            {{ cat['nome'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <input type="month" name="mes" value="{{ filtros.mes }}">
+
+                <button type="submit">Filtrar</button>
+                <a href="{{ url_for('lancamentos.listar') }}">Limpar filtros</a>
+            </form>
             <ul class="transaction-list">
                 {% for t in transacoes %}
                     <li>
