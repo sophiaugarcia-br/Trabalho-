@@ -1,4 +1,3 @@
-
 """
 Regras de negócio dos investimentos de renda fixa com taxa fixa.
 
@@ -13,6 +12,7 @@ from decimal import Decimal
 
 from financas.utils.datas import inicio_mes, fim_mes
 from financas.utils.dinheiro import arredondar_centavos
+from financas.repositorios import investimento_repo
 
 DIAS_NO_ANO = Decimal(365)  # juros compostos por dias corridos, ano de 365 dias
 
@@ -105,3 +105,11 @@ def resumo_mes(investimentos, ano, mes):
         sum(r.lucro_centavos for r in itens),
         sum(r.total_centavos for r in itens),
     )
+
+
+def resumo_mes_repositorio(ano, mes, repo=investimento_repo):
+    """Busca os investimentos ativos no período e reaproveita o cálculo original."""
+    inicio = inicio_mes(ano, mes)
+    fim = fim_mes(ano, mes)
+    investimentos = repo.listar_ativos_no_periodo(inicio, fim)
+    return resumo_mes(investimentos, ano, mes)
