@@ -1,4 +1,3 @@
-
 import math
 from dataclasses import dataclass
 from datetime import date
@@ -40,6 +39,8 @@ def _normalizar_data(valor: date | str | None) -> Optional[date]:
 def calcular_plano(meta, hoje):
     """Calcula quanto guardar por semana e por mês para atingir a meta no prazo."""
     prazo = _normalizar_data(meta.prazo)
+    if prazo is None:
+        raise ValueError("A meta precisa ter um prazo para calcular o plano.")
     faltante = max(0, meta.preco_centavos - meta.guardado_centavos)
     dias = (prazo - hoje).days
 
@@ -101,7 +102,10 @@ def guardar_valor_meta(
     if meta is None:
         return None
 
-    meta.guardado_centavos += int(valor_centavos)
+    valor_centavos = int(valor_centavos)
+    if valor_centavos <= 0:
+        raise ValueError("O valor guardado deve ser maior que zero.")
+    meta.guardado_centavos += valor_centavos
     if meta.guardado_centavos >= meta.preco_centavos:
         meta.status = "CONCLUIDA"
         if meta.concluida_em is None:
@@ -120,10 +124,13 @@ def painel_metas(
     data_ref = hoje or date.today()
     abertas = repo.listar_por_status("ABERTA")
     itens = [
-        {"meta": m, "plano": calcular_plano(m, data_ref)}
+        {
+            "meta": m,
+            "plano": calcular_plano(m, data_ref) if _normalizar_data(m.prazo) is not None else None,
+        }
         for m in abertas
     ]
-    planos = [item["plano"] for item in itens]
+    planos = [item["plano"] for item in itens if item["plano"] is not None]
     return {
         "itens": itens,
         "viabilidade": viabilidade(planos, sobra_media_centavos),
