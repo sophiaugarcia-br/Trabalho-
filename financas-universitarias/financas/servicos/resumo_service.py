@@ -1,9 +1,5 @@
-"""
-Serviço de resumo: totais do mês, extrato com filtros, registro de
-lançamentos e dados dos gráficos.
-"""
-from datetime import date
 
+from datetime import date
 from financas.utils import datas, validacao
 from financas.utils.dinheiro import para_centavos
 
@@ -13,25 +9,22 @@ TIPO_SAIDA = "SAIDA"
 def _periodo_do_mes(ano, mes):
     return datas.inicio_mes(ano, mes), datas.fim_mes(ano, mes)
 
-
 def _dia_do_mes(transacao):
     data = transacao["data"]
     if isinstance(data, str):
         data = date.fromisoformat(data)  
     return data.day
 
-
 def _semana_do_mes(dia):
     return (dia - 1) // 7 + 1
-
 
 def _em_reais(centavos):
     return centavos / 100
 
 
 
-# 1) Resumo do mês (tela inicial)
-# ---------------------------------------------------------------------------
+# 1) Resumo do mês 
+# ---------
 def resumo_mes(trans_repo, ano, mes, hoje=None):
     if hoje is None:
         hoje = date.today()
@@ -61,7 +54,7 @@ def resumo_mes(trans_repo, ano, mes, hoje=None):
     }
 
 # 2) Extrato com filtros
-# ---------------------------------------------------------------------------
+# ---------
 def listar_extrato(trans_repo, filtros):
     periodo = _periodo_do_mes(filtros["ano"], filtros["mes"])
 
@@ -75,8 +68,8 @@ def listar_extrato(trans_repo, filtros):
     return sorted(transacoes, key=lambda t: t["data"], reverse=True)
 
 
-# 3) Registrar um lançamento (formulário de entrada/saída)
-# ---------------------------------------------------------------------------
+# 3) Registrar um lançamento 
+# --------
 def registrar_lancamento(trans_repo, dados):
     erros = validacao.validar_lancamento(dados)
     if erros:
@@ -99,8 +92,8 @@ def registrar_lancamento(trans_repo, dados):
     return {"ok": True, "id": novo_id, "erros": []}
 
 
-# 4) Dados dos gráficos (a rota /api/graficos devolve isto como JSON)
-# ---------------------------------------------------------------------------
+# 4) Dados dos gráficos 
+# ---------------------
 def dados_graficos(trans_repo, ano, mes, filtro="saidas", categoria_id=None):
     if filtro == "investimentos":
         from financas.servicos import investimento_service
@@ -111,7 +104,7 @@ def dados_graficos(trans_repo, ano, mes, filtro="saidas", categoria_id=None):
 
     periodo = _periodo_do_mes(ano, mes)
 
-    # --- Gráfico de colunas: total por semana ---------------------------
+    # --- Gráfico: total por semana ---
     entradas_por_semana = [0, 0, 0, 0, 0]  # semanas 1 a 5, em centavos
     saidas_por_semana = [0, 0, 0, 0, 0]
 
@@ -128,7 +121,7 @@ def dados_graficos(trans_repo, ano, mes, filtro="saidas", categoria_id=None):
     else:  # "saidas" (padrão)
         colunas["saidas"] = [_em_reais(v) for v in saidas_por_semana]
 
-    # --- Gráfico de pizza: total por categoria --------------------------
+    # --- Gráfico: total por categoria --
     tipo_pizza = TIPO_ENTRADA if filtro == "entradas" else TIPO_SAIDA
     pizza = {"ids": [], "rotulos": [], "valores": [], "cores": []}
 
