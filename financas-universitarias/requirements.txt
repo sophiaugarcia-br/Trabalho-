@@ -9,3 +9,4 @@ datetime
 dataclasses
 reportlab
 matplotlib
+typing
