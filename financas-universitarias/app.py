@@ -1,11 +1,15 @@
 from flask import Flask 
 
 import database
-from financas.rotas import painel, lancamentos, metas
+from financas.rotas import painel, lancamentos, metas, investimentos, relatorios
+from financas.servicos import relatorio_service
 
 app = Flask(__name__)
+app.secret_key = "cH13!2" 
 
 database.inicializar_banco()
+relatorio_service.gerar_pendentes()   
+
 
 def formatar_brl(centavos):
     texto = f"{centavos / 100:,.2f}"
@@ -13,6 +17,8 @@ def formatar_brl(centavos):
 
 app.add_template_filter(formatar_brl, "brl")
 
+app.register_blueprint(relatorios.bp)
+app.register_blueprint(investimentos.bp)
 app.register_blueprint(metas.bp)
 app.register_blueprint(painel.bp)
 app.register_blueprint(lancamentos.bp)

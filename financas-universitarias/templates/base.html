@@ -16,10 +16,17 @@
             <a href="{{ url_for('painel.index') }}">Painel</a>
             <a href="{{ url_for('lancamentos.listar') }}">Lançamentos</a>
             <a href="{{ url_for('metas.listar') }}">Metas</a>
+            <a href="{{ url_for('investimentos.listar') }}">Investimentos</a>
+            <a href="{{ url_for('relatorios.listar') }}">Relatórios</a>
         </nav>
     </div>
 
     <main class="menu">
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% for categoria, texto in mensagens %}
+                <p class="{{ 'erro' if categoria == 'erro' else 'ok' }}">{{ texto }}</p>
+            {% endfor %}
+        {% endwith %}
         {% block conteudo%}
         {% endblock %}
     </main>
