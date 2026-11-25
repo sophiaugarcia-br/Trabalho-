@@ -25,7 +25,7 @@ def teste_formatar_brl():
     assert formatar_brl(-1250) == "-R$ 12,50"
 
 def test_dividir_centavos():
-    assert dividir_centavos(120000, 26) == 4615   # 46,15
-    assert dividir_centavos(120000, 6) == 20000   # exato
-    assert dividir_centavos(10, 4) == 3           # 2,5 arredonda para 3
+    assert dividir_centavos(120000, 26) == 4615  
+    assert dividir_centavos(120000, 6) == 20000   
+    assert dividir_centavos(10, 4) == 3          
     assert dividir_centavos(0, 5) == 0
