@@ -1,6 +1,6 @@
 
 from datetime import datetime
-from financas.utils.dinheiro import centavos
+from financas.utils.dinheiro import para_centavos
 TIPOS_VALIDOS = ("ENTRADA", "SAIDA")
 
 def validar_obrigatorio(texto, campo):
@@ -31,7 +31,6 @@ def validar_data(texto, campo="Data"):
     return []
 
 def validar_lancamento(dados):
-    """Valida um lançamento inteiro (dicionário do formulário)."""
     erros = []
     if dados.get("tipo") not in TIPOS_VALIDOS:
         erros.append("Tipo deve ser ENTRADA ou SAIDA.")
