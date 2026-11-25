@@ -1,5 +1,4 @@
 from datetime import date
-from types import SimpleNamespace
 import pytest
 
 from financas.servicos.resumo_service import (
@@ -13,8 +12,8 @@ from financas.servicos.resumo_service import (
 HOJE = date(2026, 11, 12)
 
 CATEGORIAS = {
-    1: SimpleNamespace(nome="Alimentação", cor="#D1495B"),
-    2: SimpleNamespace(nome="Transporte", cor="#1F6F8B"),
+    1: {"nome": "Alimentação", "cor": "#D1495B"},
+    2: {"nome": "Transporte", "cor": "#1F6F8B"},
 }
 
 
@@ -27,10 +26,10 @@ class TransacaoItem(dict):
         except KeyError as exc:
             raise AttributeError(name) from exc
 
-
 class RepoFalso:
-    def __init__(self, transacoes=()):
+    def __init__(self, transacoes=(), categorias=None):
         self.transacoes = [TransacaoItem(tr) for tr in transacoes]
+        self.categorias = categorias or CATEGORIAS
         self.inseridos = []
 
     def listar(self, periodo, tipo=None, categoria_id=None):
@@ -54,16 +53,16 @@ class RepoFalso:
         totais = {}
         for tr in self.listar(periodo, tipo=tipo):
             cat_id = tr.get("categoria_id")
-            if cat_id in CATEGORIAS:
+            if cat_id in self.categorias:
                 totais[cat_id] = totais.get(cat_id, 0) + tr["valor_centavos"]
 
         linhas = []
         for cat_id, total in totais.items():
-            cat = CATEGORIAS[cat_id]
+            cat = self.categorias[cat_id]
             linhas.append({
                 "categoria_id": cat_id,
-                "nome": cat.nome,
-                "cor": cat.cor,
+                "nome": cat["nome"],
+                "cor": cat["cor"],
                 "total_centavos": total,
             })
         return linhas
@@ -82,12 +81,16 @@ def t(tipo, valor, dia, cat=1, mes=11):
 
 @pytest.fixture
 def repo():
-    return RepoFalso([
-        t("ENTRADA", 100000, 5),
-        t("SAIDA", 30000, 10, cat=1),
-        t("SAIDA", 5000, 20, cat=2),
-        t("SAIDA", 999, 31, mes=10),
-    ])
+    return RepoFalso(
+        transacoes=[
+            t("ENTRADA", 100000, 5),
+            t("SAIDA", 30000, 10, cat=1),
+            t("SAIDA", 5000, 20, cat=2),
+            t("SAIDA", 999, 31, mes=10),
+        ],
+        categorias=CATEGORIAS,
+    )
+
 
 
 def test_resumo_vai_so_ate_hoje(repo):
@@ -137,8 +140,9 @@ def test_registrar_valido(monkeypatch):
     campos = repo_local.inseridos[0]
     assert campos["valor_centavos"] == 2590
     assert campos["descricao"] == "Almoço"
-    assert campos["data"] == date(2026, 11, 12)
-    assert campos["categoria_id"] == 1
+    assert campos["data"] == "2026-11-12"
+    assert campos["categoria_id"] == "1"
+
 
 
 def test_registrar_invalido_nao_salva(monkeypatch):
@@ -163,6 +167,7 @@ def test_registrar_invalido_nao_salva(monkeypatch):
     assert res.get("id") is None
     assert len(res["erros"]) == 2
     assert repo_local.inseridos == []
+
 
 
 def test_semana_do_mes():
