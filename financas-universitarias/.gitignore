@@ -10,3 +10,4 @@ __pycache__/
 # Banco de dados e PDFs gerados localmente nos testes
 dados/*.db
 relatorios/*.pdf
+relatorios/*.hash
