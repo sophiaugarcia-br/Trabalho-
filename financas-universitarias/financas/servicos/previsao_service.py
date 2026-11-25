@@ -1,4 +1,3 @@
-
 """
 Recorrências (contas e ganhos fixos) e previsão de fim de mês.
 
@@ -12,6 +11,8 @@ Convenções do projeto: dinheiro em centavos (int) e datas como date.
 Os repositórios entram como parâmetros.
 """
 from dataclasses import dataclass
+from financas.modelos.transacao import Transacao
+from financas.modelos.previsao import Previsao as PrevisaoModel
 from datetime import date, timedelta
 
 # No resumo_service os tipos se chamam TIPO_ENTRADA e TIPO_SAIDA;
@@ -61,7 +62,8 @@ def _ocorrencias_semanais(rec, inicio, fim):
     rec.dia é o dia da semana no padrão do Python (0 = segunda ... 6 = domingo).
     """
     # quantos dias faltam, a partir de 'inicio', até o dia da semana da recorrência
-    atraso = (rec.dia - inicio.weekday()) % 7
+    # O modelo do projeto usa 1=segunda ... 7=domingo; weekday() usa 0..6.
+    atraso = ((rec.dia - 1) - inicio.weekday()) % 7
     d = inicio + timedelta(days=atraso)
     datas = []
     while d <= fim:
@@ -90,20 +92,38 @@ def ocorrencias(rec, inicio, fim):
 
 # Recorrências -> lançamentos reais
 # ---------------------------------------------------------------------------
+def _listar_transacoes(trans_repo, inicio, fim):
+    """Usa a assinatura do repositório do projeto e filtra em memória quando preciso."""
+    return trans_repo.listar_por_periodo(inicio, fim)
+
+
+def _criar_transacao_recorrente(trans_repo, rec, data_ocorrencia):
+    transacao = Transacao(
+        id=None,
+        tipo=rec.tipo,
+        descricao=rec.descricao,
+        valor_centavos=int(rec.valor_centavos),
+        data=data_ocorrencia,
+        categoria_id=rec.categoria_id,
+        recorrencia_id=rec.id,
+    )
+    return trans_repo.criar(transacao)
+
+
 def materializar_recorrencias(trans_repo, rec_repo, hoje):
     """Cria os lançamentos das recorrências que já venceram (até hoje).
 
     Não duplica: confere os pares (recorrencia_id, data) que já existem.
     Devolve quantos lançamentos novos foram criados.
     """
-    recs = rec_repo.listar()
+    recs = rec_repo.listar_todas()
     if not recs:
         return 0
     primeiro = min(r.data_inicio for r in recs)
     # conjunto de (recorrência, data) já lançados, para não repetir
     existentes = {
         (t.recorrencia_id, t.data)
-        for t in trans_repo.listar((primeiro, hoje))
+        for t in _listar_transacoes(trans_repo, primeiro, hoje)
         if t.recorrencia_id is not None
     }
     criados = 0
@@ -111,14 +131,7 @@ def materializar_recorrencias(trans_repo, rec_repo, hoje):
         for d in ocorrencias(rec, rec.data_inicio, hoje):
             if (rec.id, d) in existentes:
                 continue  # já foi lançado antes
-            trans_repo.inserir(
-                tipo=rec.tipo,
-                descricao=rec.descricao,
-                valor_centavos=rec.valor_centavos,
-                data=d,
-                categoria_id=rec.categoria_id,
-                recorrencia_id=rec.id,
-            )
+            _criar_transacao_recorrente(trans_repo, rec, d)
             criados += 1
     return criados
 
@@ -131,7 +144,7 @@ def ocorrencias_futuras(rec_repo, hoje):
     amanha = hoje + timedelta(days=1)
     fim = fim_mes(hoje.year, hoje.month)
     futuras = []
-    for rec in rec_repo.listar():
+    for rec in rec_repo.listar_todas():
         for d in ocorrencias(rec, amanha, fim):
             futuras.append((rec, d))
     return futuras
@@ -147,8 +160,10 @@ def gasto_variavel_projetado(trans_repo, hoje):
     """
     inicio = hoje - timedelta(days=DIAS_JANELA - 1)
     # só saídas que não vieram de recorrência
-    saidas = [t for t in trans_repo.listar((inicio, hoje), SAIDA)
-              if t.recorrencia_id is None]
+    saidas = [
+        t for t in _listar_transacoes(trans_repo, inicio, hoje)
+        if t.tipo == SAIDA and t.recorrencia_id is None
+    ]
     total = sum(t.valor_centavos for t in saidas)
     dias_restantes = (fim_mes(hoje.year, hoje.month) - hoje).days
     # (total / 4 semanas) * (dias_restantes / 7)  =  total * dias_restantes / 28
@@ -197,13 +212,15 @@ def registrar_previsao_semanal(trans_repo, rec_repo, prev_repo, hoje):
 
     Devolve a Previsao gerada, ou None se ainda não era hora.
     """
-    ultima = prev_repo.ultima()
+    ultima = prev_repo.buscar_ultima()
     if not deve_regerar(ultima.gerada_em if ultima else None, hoje):
         return None
     previsao = gerar_previsao(trans_repo, rec_repo, hoje)
-    prev_repo.inserir(
+    registro = PrevisaoModel(
+        id=None,
         gerada_em=previsao.gerada_em,
         saldo_projetado_centavos=previsao.saldo_projetado_centavos,
         situacao=previsao.situacao,
     )
+    prev_repo.criar(registro)
     return previsao
