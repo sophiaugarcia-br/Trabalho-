@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<div class="cards">
+
+    <div class="left-column">
+        <section class="add-card">
+            <h3>Novo investimento</h3>
+
+            {% for e in erros %}
+                <p class="erro">{{ e }}</p>
+            {% endfor %}
+
+            <form action="{{ url_for('investimentos.listar') }}" method="POST" class="transaction-form">
+                <input type="text" name="nome" placeholder="Nome (ex: CDB Banco X)" required>
+                <input type="text" name="valor" placeholder="Valor aplicado (ex: 1000,00)" required>
+                <input type="text" name="taxa" placeholder="Taxa em % (ex: 12)" required>
+                <select name="periodicidade_taxa" required>
+                    <option value="" disabled selected>Taxa ao...</option>
+                    <option value="AA">Ano</option>
+                    <option value="AM">Mês</option>
+                </select>
+                <label>Início <input type="date" name="data_inicio" required></label>
+                <label>Resgate (opcional) <input type="date" name="data_resgate"></label>
+                <button type="submit">Adicionar investimento</button>
+            </form>
+        </section>
+
+        <section class="balance-card">
+            <div class="balance-text">
+                <p class="balance-wallet">Rendimento de {{ mes_atual }}</p>
+                <p class="saldo">Lucro do mês (bruto)</p>
+                <p class="money">{{ resumo.total_lucro | brl }}</p>
+                <p class="varia">Total investido no fim do mês: {{ resumo.total_final | brl }}</p>
+            </div>
+        </section>
+    </div>
+
+    <section class="side-card">
+        <div class="side-box">
+            <p class="transactions">Meus investimentos</p>
+            <form method="GET" class="transaction-form">
+                <input type="month" name="mes" value="{{ mes_atual }}" onchange="this.form.submit()">
+            </form>
+            <ul class="transaction-list">
+                {% for item in resumo.itens %}
+                <li>
+                    <strong>{{ item.inv.nome }}</strong>
+                    ({{ item.inv.valor_inicial_centavos | brl }} a {{ item.inv.taxa }}%
+                    {{ "a.a." if item.inv.periodicidade_taxa == "AA" else "a.m." }})
+                    <br>
+                    <small>
+                        Início: {{ item.inv.data_inicio.strftime("%d/%m/%Y") }}
+                        {% if item.inv.data_resgate %}
+                            | Resgate: {{ item.inv.data_resgate.strftime("%d/%m/%Y") }}
+                        {% endif %}
+                    </small>
+                    <br>
+                    Lucro no mês: {{ item.lucro_mes | brl }} | Total: {{ item.total_fim | brl }}
+                </li>
+                {% else %}
+                <li>Nenhum investimento ativo neste mês.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+</div>
+{% endblock %}
