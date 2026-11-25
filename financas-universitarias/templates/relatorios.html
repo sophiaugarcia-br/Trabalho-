@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<section class="side-card">
+    <p class="transactions">Relatórios mensais</p>
+    <ul class="transaction-list">
+        {% for m in meses %}
+        <li>
+            <a href="{{ url_for('relatorios.ver', ym=m.ym) }}" class="relatorios-texto">{{ m.nome }}</a>
+            — <a href="{{ url_for('relatorios.baixar_pdf', ym=m.ym) }}" class="relatorios-texto">Baixar PDF</a>
+        </li>
+        {% else %}
+        <li>Nenhum mês disponível ainda.</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

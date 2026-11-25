@@ -7,3 +7,5 @@ contextlib
 os
 datetime
 dataclasses
+reportlab
+matplotlib

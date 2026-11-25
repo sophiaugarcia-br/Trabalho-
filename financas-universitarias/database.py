@@ -90,7 +90,7 @@ def inserir_transacao(categoria_id: int, descricao: str, valor: float, data: dat
             (categoria_id, descricao.strip(), valor, data.isoformat(), tipo),
         )
 
-def listar_transacoes(mes: int | None = None, ano: int | None = None, tipo: str | None = None) -> list[dict]:
+def listar_transacoes(mes: int | None = None, ano: int | None = None, tipo: str | None = None, categoria_id: int | None = None) -> list[dict]:
     sql = """
         SELECT t.id,
                t.data,
@@ -110,6 +110,9 @@ def listar_transacoes(mes: int | None = None, ano: int | None = None, tipo: str 
     if tipo:
         sql += " AND t.tipo = ?"
         params.append(tipo)
+    if categoria_id:
+        sql += " AND t.categoria_id = ?"
+        params.append(categoria_id)
         
     sql += " ORDER BY t.data DESC, t.id DESC"
     

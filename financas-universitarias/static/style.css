@@ -243,3 +243,20 @@ nav a:hover {
     border-radius: 5px;
     cursor: pointer;
 }
+
+.relatorios-texto {
+    color: #a0a0a0;
+    text-decoration: none;
+}
+
+.relatorio-texto {
+    color: #ececec;
+    text-decoration: none;
+    padding-top: 10px;
+}
+
+.ok {
+    color: #2ecc71;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}

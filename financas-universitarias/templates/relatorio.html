@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<div class="left-column">
+
+    <section class="balance-card">
+        <div class="balance-text">
+            <p class="balance-wallet">Relatório de {{ nome_mes }}</p>
+            <p class="saldo">Resultado do mês ({{ rel.situacao }})</p>
+            <p class="money">{{ rel.resultado | brl }}</p>
+            <p class="varia">
+                Entradas: {{ rel.total_entradas | brl }} | Saídas: {{ rel.total_saidas | brl }}
+            </p>
+            <p><a href="{{ url_for('relatorios.baixar_pdf', ym=ym) }}" class="relatorio-texto">Baixar PDF</a>
+               | <a href="{{ url_for('relatorios.listar') }}" class="relatorio-texto">Voltar</a></p>
+        </div>
+    </section>
+
+    <section class="side-card">
+        <p class="transactions">Entradas</p>
+        <ul class="transaction-list">
+            {% for l in rel.entradas %}
+            <li>{{ l.data }} — <strong>{{ l.descricao }}</strong> ({{ l.categoria }}): {{ l.valor_centavos | brl }}</li>
+            {% else %}<li>Nenhuma entrada.</li>{% endfor %}
+        </ul>
+    </section>
+
+    <section class="side-card">
+        <p class="transactions">Saídas</p>
+        <ul class="transaction-list">
+            {% for l in rel.saidas %}
+            <li>{{ l.data }} — <strong>{{ l.descricao }}</strong> ({{ l.categoria }}): {{ l.valor_centavos | brl }}</li>
+            {% else %}<li>Nenhuma saída.</li>{% endfor %}
+        </ul>
+    </section>
+
+    <section class="side-card">
+        <p class="transactions">Metas em aberto</p>
+        <ul class="transaction-list">
+            {% for m in rel.metas %}
+            <li><strong>{{ m.produto }}</strong> até {{ m.prazo }}: faltam {{ m.faltante | brl }}
+                ({{ m.por_mes | brl }}/mês)</li>
+            {% else %}<li>Nenhuma meta em aberto.</li>{% endfor %}
+        </ul>
+    </section>
+
+    <section class="side-card">
+        <p class="transactions">Investimentos (bruto, fora do resultado)</p>
+        <ul class="transaction-list">
+            {% for i in rel.investimentos.itens %}
+            <li><strong>{{ i.nome }}</strong> ({{ i.taxa_texto }}): lucro {{ i.lucro_mes | brl }},
+                total {{ i.total_fim | brl }}</li>
+            {% else %}<li>Nenhum investimento ativo neste mês.</li>{% endfor %}
+        </ul>
+    </section>
+
+</div>
+{% endblock %}
