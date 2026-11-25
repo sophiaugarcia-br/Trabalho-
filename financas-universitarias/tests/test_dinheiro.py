@@ -1,7 +1,7 @@
 
 
 import pytest
-from financas.utils.dinheiro import centavos, formatar_brl, dividir_centavos
+from financas.utils.dinheiro import para_centavos, formatar_brl, dividir_centavos
 
 def test_centavos():
     assert para_centavos("12.50") == 1250

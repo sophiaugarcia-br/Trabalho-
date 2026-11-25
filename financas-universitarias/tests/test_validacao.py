@@ -1,6 +1,6 @@
-
+import pytest
 from financas.utils.validacao import (
-    validar_obrigatorio, validar_valor, validar_data, validar_lancamento
+    validar_obrigatorio, validar_valor, validar_data, validar_lancamento, normalizar_data
 )
 
 def test_obrigatorio():

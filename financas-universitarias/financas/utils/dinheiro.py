@@ -25,16 +25,16 @@ def para_centavos(texto):
     return int((valor * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
-def formatar_brl(centavos):
-    """Converte centavos (int) em texto no formato R$ 1.250,00."""
-    reais, resto = divmod(abs(centavos), 100)  # separa reais e centavos
-    # f"{reais:,}" usa vírgula de milhar; trocamos por ponto (padrão brasileiro)
-    texto = f"{reais:,}".replace(",", ".") + f",{resto:02d}"  # :02d = dois dígitos
+def formatar_brl(centavos: int) -> str:
+    """Formata um valor em centavos para moeda BRL sem separador de milhar."""
     sinal = "-" if centavos < 0 else ""
-    return f"{sinal}R$ {texto}"
+    absoluto = abs(centavos)
+    reais = absoluto // 100
+    resto_centavos = absoluto % 100
+    return f"{sinal}R$ {reais},{resto_centavos:02d}"
 
 
-def dividir_centavos(centavos, divisor):
+def dividir_centavos(centavos: int, divisor: int) -> int:
     """Divide centavos por um inteiro, arredondando para o centavo mais próximo.
 
     Usa só inteiros: (2c + d) // (2d) é o mesmo que arredondar c / d com a
