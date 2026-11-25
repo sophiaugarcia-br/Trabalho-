@@ -22,6 +22,12 @@ def test_data():
     assert validar_data("12/11/2026") != []
     assert validar_data(None) != []
 
+def test_normalizar_data():
+    assert normalizar_data("2026-1-5") == "2026-01-05"
+    assert normalizar_data("2026-01-05") == "2026-01-05"
+    with pytest.raises(ValueError):
+        normalizar_data("2026-02-30")
+
 def test_lancamento_valido():
     dados = {"tipo": "SAIDA", "descricao": "Almoço", "valor": "25,90",
              "data": "2026-11-12", "categoria_id": "1"}
