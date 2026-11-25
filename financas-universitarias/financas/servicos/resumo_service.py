@@ -226,7 +226,7 @@ def dados_graficos(
             "filtro": filtro,
             "colunas": {"rotulos": [], "investimentos": []},
             "pizza": {"ids": [], "rotulos": [], "valores": [], "cores": []},
-            "resumo": investimento_service.resumo_mes([], ano, mes),
+            "resumo": investimento_service.resumo_mes_repositorio(ano, mes),
         }
 
     periodo = _periodo_do_mes(ano, mes)
