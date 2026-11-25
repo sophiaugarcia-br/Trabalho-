@@ -48,6 +48,7 @@ def criar_tabelas():
         data TEXT NOT NULL,
         categoria_id INTEGER NOT NULL, 
         recorrencia_id INTEGER,
+        UNIQUE (recorrencia_id, data),
         FOREIGN KEY (categoria_id) REFERENCES categorias(id), 
         FOREIGN KEY (recorrencia_id) REFERENCES recorrencias(id) ON DELETE SET NULL
         );
@@ -96,11 +97,11 @@ def criar_tabelas():
 # Criar categorias padrões no BD caso seja o primeiro acesso do usuário à aplicação
 
 CATEGORIAS_PADRAO: list[Categoria] = [
-Categoria(nome="Salário", tipo="ENTRADA", cor="#13A500"),
-Categoria(nome="Freelance", tipo="ENTRADA", cor="#0068A5"),
-Categoria(nome="Moradia", tipo="SAIDA", cor="#2400A5"),
+Categoria(nome="Estágio", tipo="ENTRADA", cor="#13A500"),
+Categoria(nome="Mesada", tipo="ENTRADA", cor="#0068A5"),
+Categoria(nome="Mensalidade", tipo="SAIDA", cor="#2400A5"),
 Categoria(nome="Alimentação", tipo="SAIDA", cor="#FFF241"),
-Categoria(nome="Educação", tipo="SAIDA", cor="#BB0000"),
+Categoria(nome="Estudos", tipo="SAIDA", cor="#BB0000"),
 Categoria(nome="Saúde", tipo="SAIDA", cor="#FFFFFF"),
 Categoria(nome="Transporte", tipo="SAIDA", cor="#009FA5"),
 Categoria(nome="Vestuário", tipo="SAIDA", cor="#B36500")

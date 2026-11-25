@@ -3,6 +3,7 @@ from financas.modelos.transacao import Transacao
 from financas.repositorios.banco import conectar
 from contextlib import closing
 from datetime import date
+from typing import Literal
 
 def _row_para_transacao(row: sqlite3.Row) -> Transacao: 
     return Transacao(**dict(row))
@@ -51,8 +52,29 @@ def excluir(transacao_id: int) -> bool:
 
 def listar_por_periodo(data_inicio: date, data_fim: date) -> list[Transacao]: 
     with closing(conectar()) as conexao: 
-        with conexao: 
-            cursor = conexao.cursor()
-            cursor.execute("SELECT * FROM transacoes WHERE data BETWEEN ? AND ? ORDER BY data DESC, id DESC;", (data_inicio.isoformat(), data_fim.isoformat()))
-            manyrows = cursor.fetchall()
-            return [_row_para_transacao(row) for row in manyrows]
+        cursor = conexao.cursor()
+        cursor.execute("SELECT * FROM transacoes WHERE data BETWEEN ? AND ? ORDER BY data DESC, id DESC;", (data_inicio.isoformat(), data_fim.isoformat()))
+        manyrows = cursor.fetchall()
+        return [_row_para_transacao(row) for row in manyrows]
+        
+def listar_por_tipo(tipo: Literal["ENTRADA", "SAIDA"]) -> list[Transacao]: 
+    tipo = tipo.strip().upper() # type: ignore
+    if tipo not in ("ENTRADA", "SAIDA"): 
+        raise ValueError("Erro: 'tipo' da transacao deve ser 'ENTRADA' ou 'SAIDA'.")
+    with closing(conectar()) as conexao: 
+        cursor = conexao.cursor()
+        cursor.execute("""
+        SELECT * FROM transacoes
+        WHERE tipo = ?
+        ORDER BY data DESC, id DESC;""", (tipo,))
+        return [_row_para_transacao(row) for row in cursor.fetchall()]
+        
+def listar_por_categoria(categoria_id: int) -> list[Transacao]: 
+    with closing(conectar()) as conexao: 
+        cursor = conexao.cursor()
+        cursor.execute("""
+        SELECT * FROM transacoes
+        WHERE categoria_id = ?
+        ORDER BY data DESC;""", (categoria_id,))
+        manyrows = cursor.fetchall()
+        return [_row_para_transacao(row) for row in manyrows]
