@@ -19,13 +19,18 @@ def validar_valor(texto, campo="Valor"):
     if centavos <= 0:
         return [f"{campo} deve ser maior que zero."]
     return []
+    
+def normalizar_data(texto):
+    data = datetime.strptime(str(texto).strip(), "%Y-%m-%d")
+    return data.strftime("%Y-%m-%d")
+
 
 def validar_data(texto, campo="Data"):
     erros = validar_obrigatorio(texto, campo)
     if erros:
         return erros
     try:
-        datetime.strptime(str(texto), "%Y"-%m-%d")
+        normalizar_data(texto)
     except ValueError:
         return [f"{campo} inválida (use AAAA-MM-DD)."]
     return []
