@@ -122,7 +122,7 @@ def test_registrar_valido(monkeypatch):
     from financas.servicos import resumo_service
 
     monkeypatch.setattr(resumo_service.validacao, "validar_lancamento", lambda _d: [])
-    monkeypatch.setattr(resumo_service.validacao, "normalizar_data", lambda d: date.fromisoformat(d))
+    monkeypatch.setattr(resumo_service.validacao, "normalizar_data", lambda d: d)
 
     repo_local = RepoFalso()
     dados = {
@@ -141,7 +141,7 @@ def test_registrar_valido(monkeypatch):
     assert campos["valor_centavos"] == 2590
     assert campos["descricao"] == "Almoço"
     assert campos["data"] == "2026-11-12"
-    assert campos["categoria_id"] == "1"
+    assert campos["categoria_id"] == 1
 
 
 
