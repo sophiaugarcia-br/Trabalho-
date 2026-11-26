@@ -2,11 +2,3 @@ flask
 reportlab
 matplotlib
 pytest
-sqlite3
-contextlib
-os
-datetime
-dataclasses
-reportlab
-matplotlib
-typing

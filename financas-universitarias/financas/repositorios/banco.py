@@ -4,7 +4,7 @@ import os
 import sqlite3
 from financas.modelos.categoria import Categoria
 
-# Função de conexão com o banco
+# Função de conexão com o banco com ativação das chaves estrangeiras e utilização do tipo de dado do sqlite3 semelhante a um dicionário
 
 def conectar():
     os.makedirs(PASTA_BANCO, exist_ok=True)
@@ -13,7 +13,7 @@ def conectar():
     conexao.execute("PRAGMA foreign_keys = ON;")
     return conexao
 
-# Criar as tabelas
+# Criar as tabelas na primeira inicialização da aplicação. Se já existir, não criar do zero de modo que substitua a já existente
 
 def criar_tabelas(): 
     with closing(conectar()) as conexao:
@@ -94,8 +94,7 @@ def criar_tabelas():
         );
 """)
 
-# Criar categorias padrões no BD caso seja o primeiro acesso do usuário à aplicação
-
+# Listagem das categorias vindas por padrão na aplicação
 CATEGORIAS_PADRAO: list[Categoria] = [
 Categoria(nome="Estágio", tipo="ENTRADA", cor="#13A500"),
 Categoria(nome="Mesada", tipo="ENTRADA", cor="#0068A5"),
@@ -107,6 +106,7 @@ Categoria(nome="Transporte", tipo="SAIDA", cor="#009FA5"),
 Categoria(nome="Vestuário", tipo="SAIDA", cor="#B36500")
 ]
 
+# Criar categorias padrões no Banco de Dados caso seja o primeiro acesso do usuário à aplicação
 def semear_categorias() -> None: 
     with closing(conectar()) as conexao:
         cursor = conexao.cursor()
@@ -118,7 +118,6 @@ def semear_categorias() -> None:
         conexao.commit()
 
 # Função padrão utilizada ao inicializar o sistema
-
 def inicializar_banco() -> None: 
     criar_tabelas()
     semear_categorias()

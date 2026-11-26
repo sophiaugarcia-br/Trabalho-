@@ -3,6 +3,9 @@ from decimal import Decimal, InvalidOperation
 from datetime import date
 from typing import Literal
 
+"""  Este arquivo cria a classe (molde) 'Investimento' para todo dado (objeto) que é um investimento, cujo qual tem um nome, valor_inicial_centavos, taxa,
+     periodicidade_taxa, data_inicio, data_resgate e id (ex: 'Selic Tesouro Direto 1', 5000, 5.5, AA, 2026-10-10, 2026-12-10, 27). Isso serve para definir e aceitar universalmente, em variáveis daquele investimento, apenas um tipo de dado por atributo.  """
+
 @dataclass
 class Investimento: 
     nome: str
@@ -15,14 +18,14 @@ class Investimento:
 
     def __post_init__(self):
 
-        # Investimento.nome
+        # Investimento.nome: verificação e validação
         if not isinstance(self.nome, str):
             raise TypeError(f"Investimento.nome deve ser declarado e ser uma string.")
         self.nome = self.nome.strip()
         if not self.nome:
             raise ValueError("Investimento.nome não pode ficar vazio.")
 
-        # Investimento.valor_inicial_centavos
+        # Investimento.valor_inicial_centavos: verificação e validação
         if isinstance(self.valor_inicial_centavos, str): 
             try:
                 self.valor_inicial_centavos = int(self.valor_inicial_centavos.strip())
@@ -33,7 +36,7 @@ class Investimento:
         if self.valor_inicial_centavos <= 0: 
             raise ValueError("Investimento.valor_inicial_centavos deve ser um número inteiro maior que 0.")
 
-        # Investimento.taxa
+        # Investimento.taxa: verificação e validação
         if isinstance(self.taxa, (str, float)): 
             try: 
                 self.taxa = Decimal(str(self.taxa).strip())
@@ -47,14 +50,14 @@ class Investimento:
         if self.taxa < 0: 
             raise ValueError(f"'{self.taxa}' não pode ser negativo.")
 
-        # Investimento.periodicidade_taxa
+        # Investimento.periodicidade_taxa: verificação e validação
         if not isinstance(self.periodicidade_taxa, str):
             raise TypeError("Investimento.periodicidade_taxa deve ser definido e ser do tipo 'str'.")
         self.periodicidade_taxa = self.periodicidade_taxa.strip().upper() # type: ignore
         if self.periodicidade_taxa not in ("AA", "AM"): 
             raise ValueError(f"Tipo inválido: '{self.periodicidade_taxa}'. Use 'AA' (ao ano) ou 'AM' (ao mês).")
 
-        # Investimento.data_inicio
+        # Investimento.data_inicio: verificação e validação
         if isinstance(self.data_inicio, str): 
             self.data_inicio = self.data_inicio.strip() # type: ignore
             try: 
@@ -62,7 +65,7 @@ class Investimento:
             except ValueError: raise ValueError(f"{self.data_inicio!r} não é um valor de data válido. Use o formato AAAA-MM-DD.") # type: ignore
         if type(self.data_inicio) is not date: raise TypeError(f"Tipo errôneo de dado. {type(self.data_inicio).__name__} é diferente de date ou str no formato (AAAA-MM-DD).")
 
-        # Investimento.data_resgate
+        # Investimento.data_resgate: verificação e validação
         if self.data_resgate is not None: 
             if isinstance(self.data_resgate, str): 
                 self.data_resgate = self.data_resgate.strip() # type: ignore
@@ -74,7 +77,7 @@ class Investimento:
             if self.data_resgate < self.data_inicio: 
                 raise ValueError(f"Investimento.data_resgate ({self.data_resgate}) não pode ser uma data anterior a Investimento.data_inicio ({self.data_inicio}).")
 
-        # Investimento.id
+        # Investimento.id: verificação e validação
         if self.id is not None: 
             if isinstance(self.id, str): 
                 try:

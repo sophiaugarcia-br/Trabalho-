@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Literal
 
+"""  Este arquivo cria a classe (molde) 'Transacao' para todo dado (objeto) que é uma transacao, cuja qual tem um tipo, valor_centavos, data, categoria_id, descricao, recorrencia_id, id (ex: 'SAIDA', 24390, 2023-01-03, 1, None, 4, 5). Isso serve para definir e aceitar universalmente, em variáveis daquele transacao, apenas um tipo de dado por atributo.  """
+
 @dataclass
 class Transacao: 
     tipo: Literal["ENTRADA", "SAIDA"]
@@ -14,20 +16,20 @@ class Transacao:
 
     def __post_init__(self):
 
-        # Transacao.tipo
+        # Transacao.tipo: verificação e validação
         if not isinstance(self.tipo, str):
             raise TypeError("Transacao.tipo deve existir e ser do tipo 'str'.")
         self.tipo = self.tipo.strip().upper() # type: ignore
         if self.tipo not in ("ENTRADA", "SAIDA"): 
             raise ValueError(f"Tipo inválido: '{self.tipo}'. Use 'ENTRADA' ou 'SAIDA'.")
 
-        # Transacao.descricao
+        # Transacao.descricao: verificação e validação
         if self.descricao is not None:
             if isinstance(self.descricao, str):
                 self.descricao = self.descricao.strip() or None # type: ignore
             else: raise TypeError(f"Erro! '{self.descricao}' não é uma string.")
 
-        # Transacao.valor_centavos
+        # Transacao.valor_centavos: verificação e validação
         if isinstance(self.valor_centavos, str): 
             try:
                 self.valor_centavos = int(self.valor_centavos.strip())
@@ -38,7 +40,7 @@ class Transacao:
         if self.valor_centavos <= 0: 
             raise ValueError("Transacao.valor_centavos deve ser um número inteiro maior que 0.")
 
-        # Transacao.data
+        # Transacao.data: verificação e validação
         if isinstance(self.data, str): 
             self.data = self.data.strip() # type: ignore
             try: 
@@ -46,7 +48,7 @@ class Transacao:
             except ValueError: raise ValueError(f"{self.data!r} não é um valor de data válido. Use o formato AAAA-MM-DD.") # type: ignore
         if type(self.data) is not date: raise TypeError(f"Tipo errôneo de dado. {type(self.data).__name__} é diferente de date ou str no formato (AAAA-MM-DD).")
 
-        # Transacao.categoria_id
+        # Transacao.categoria_id: verificação e validação
         if isinstance(self.categoria_id, str): 
             try:
                 self.categoria_id = int(self.categoria_id.strip())
@@ -57,7 +59,7 @@ class Transacao:
         if self.categoria_id < 1: 
             raise ValueError("Transacao.categoria_id deve ser um número inteiro maior que 0.")
 
-        # Transacao.recorrencia_id
+        # Transacao.recorrencia_id: verificação e validação
         if self.recorrencia_id is not None:
             if isinstance(self.recorrencia_id, str): 
                 try:
@@ -69,7 +71,7 @@ class Transacao:
             if self.recorrencia_id < 1: 
                 raise ValueError("Transacao.recorrencia_id deve ser um número inteiro maior que 0.")
 
-        # Transacao.id
+        # Transacao.id: verificação e validação
         if self.id is not None: 
             if isinstance(self.id, str): 
                 try:

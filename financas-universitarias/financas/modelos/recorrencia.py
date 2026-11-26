@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Literal
 
+"""  Este arquivo cria a classe (molde) 'Recorrencia' para todo dado (objeto) que é uma recorrencia, cuja qual tem um tipo, valor_centavos, periodicidade, dia, data_inicio, categoria_id, descricao, data_fim, id (ex: 'ENTRADA', 50000, 'MENSAL', 25, 2026-11-25, 2, None, None, None). Isso serve para definir e aceitar universalmente, em variáveis daquela recorrencia, apenas um tipo de dado por atributo.  """
+
 @dataclass
 class Recorrencia: 
     tipo: Literal["ENTRADA", "SAIDA"]
@@ -16,7 +18,7 @@ class Recorrencia:
 
     def __post_init__(self): 
 
-        # Recorrencia.id
+        # Recorrencia.id: verificação e validação
         if self.id is not None: 
             if isinstance(self.id, str): 
                 try:
@@ -28,27 +30,27 @@ class Recorrencia:
             if self.id < 1: 
                 raise ValueError("Recorrencia.id deve ser um número inteiro maior que 0.")
 
-        # Recorrencia.tipo
+        # Recorrencia.tipo: verificação e validação
         if not isinstance(self.tipo, str):
             raise TypeError("Recorrencia.tipo deve existir e ser do tipo 'str'.")
         self.tipo = self.tipo.strip().upper() # type: ignore
         if self.tipo not in ("ENTRADA", "SAIDA"): 
             raise ValueError(f"Tipo inválido: '{self.tipo}'. Use 'ENTRADA' ou 'SAIDA'.")
 
-        # Recorrencia.descricao
+        # Recorrencia.descricao: verificação e validação
         if self.descricao is not None:
             if isinstance(self.descricao, str):
                 self.descricao = self.descricao.strip() or None # type: ignore
             else: raise TypeError(f"Erro! '{self.descricao}' não é uma string.")
 
-        # Recorrencia.periodicidade
+        # Recorrencia.periodicidade: verificação e validação
         if not isinstance(self.periodicidade, str):
             raise TypeError("Recorrencia.periodicidade deve existir e ser do tipo 'str'.")
         self.periodicidade = self.periodicidade.strip().upper() # type: ignore
         if self.periodicidade not in ("SEMANAL", "MENSAL"): 
             raise ValueError(f"{self.periodicidade} não é válido. Tente 'SEMANAL' ou 'MENSAL'.")
 
-        # Recorrencia.dia
+        # Recorrencia.dia: verificação e validação
         if isinstance(self.dia, str): 
             try: 
                 self.dia = int(self.dia.strip())
@@ -60,7 +62,7 @@ class Recorrencia:
         elif self.periodicidade == "SEMANAL" and not (1 <= self.dia <= 7):
             raise ValueError(f"Para periodicidade {self.periodicidade}, o valor deve estar no intervalo de 1 a 7 em 'Recorrencia.dia'.")
 
-        # Recorrencia.valor_centavos
+        # Recorrencia.valor_centavos: verificação e validação
         if isinstance(self.valor_centavos, str): 
             try:
                 self.valor_centavos = int(self.valor_centavos.strip())
@@ -71,7 +73,7 @@ class Recorrencia:
         if self.valor_centavos <= 0: 
             raise ValueError("Recorrencia.valor_centavos deve ser um número inteiro maior que 0.")
 
-        # Recorrencia.data_inicio
+        # Recorrencia.data_inicio: verificação e validação
         if isinstance(self.data_inicio, str): 
             self.data_inicio = self.data_inicio.strip() # type: ignore
             try: 
@@ -79,7 +81,7 @@ class Recorrencia:
             except ValueError: raise ValueError(f"{self.data_inicio!r} não é um valor de data válido. Use o formato AAAA-MM-DD.") # type: ignore
         if type(self.data_inicio) is not date: raise TypeError(f"Tipo errôneo de dado. {type(self.data_inicio).__name__} é diferente de date ou str no formato (AAAA-MM-DD).")
 
-        # Recorrencia.data_fim
+        # Recorrencia.data_fim: verificação e validação
         if self.data_fim is not None: 
             if isinstance(self.data_fim, str): 
                 self.data_fim = self.data_fim.strip() # type: ignore
@@ -91,7 +93,7 @@ class Recorrencia:
             if self.data_fim < self.data_inicio: 
                 raise ValueError(f"Recorrencia.data_fim ({self.data_fim}) não pode ser uma data anterior a Recorrencia.data_inicio ({self.data_inicio}).")
 
-        # Recorrencia.categoria_id
+        # Recorrencia.categoria_id: verificação e validação
         if isinstance(self.categoria_id, str): 
             try:
                 self.categoria_id = int(self.categoria_id.strip())

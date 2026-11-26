@@ -4,9 +4,11 @@ from financas.repositorios.banco import conectar
 from contextlib import closing
 from datetime import date
 
+"""Função interna do módulo que tem por finalidade a atribuição facilitada dos conjuntos chave-valor do sqlite3.Row aos atributos de um objeto da classe Recorrencia"""
 def _row_para_recorrencia(row: sqlite3.Row) -> Recorrencia: 
     return Recorrencia(**dict(row))
 
+# Função que cria um novo campo no Banco de Dados a partir de um objeto 'Recorrencia' fornecido pelo usuário
 def criar(recorrencia: Recorrencia) -> Recorrencia: 
     with closing(conectar()) as conexao:
         with conexao: 
@@ -26,6 +28,7 @@ def criar(recorrencia: Recorrencia) -> Recorrencia:
         recorrencia.id = cursor.lastrowid
         return recorrencia
 
+# Função de busca de uma recorrencia que corresponda ao id dela fornecido
 def buscar_por_id(recorrencia_id: int) -> Recorrencia | None: 
     with closing(conectar()) as conexao:
         cursor = conexao.cursor() 
@@ -33,6 +36,7 @@ def buscar_por_id(recorrencia_id: int) -> Recorrencia | None:
         row = cursor.fetchone()
         return _row_para_recorrencia(row) if row else None
 
+# Função que consiste em atualizar os atributos de uma recorrencia já criada pelo id dela
 def atualizar(recorrencia: Recorrencia) -> bool:
     if recorrencia.id is None: 
         raise ValueError("Erro: Recorrencia.id não pode ser nulo.")
@@ -63,6 +67,7 @@ def atualizar(recorrencia: Recorrencia) -> bool:
             ))
         return cursor.rowcount > 0
 
+# Função excludente de recorrencia de específico id
 def excluir(recorrencia_id: int) -> bool: 
     with closing(conectar()) as conexao:
         with conexao:
@@ -70,6 +75,7 @@ def excluir(recorrencia_id: int) -> bool:
             cursor.execute("DELETE FROM recorrencias WHERE id = ?;", (recorrencia_id,))
         return cursor.rowcount > 0
 
+# Função listadora das recorrencias que permanecem ocorrendo no período da data fornecida
 def listar_ativas(data_ref: date) -> list[Recorrencia]: 
     with closing(conectar()) as conexao: 
         cursor = conexao.cursor()
@@ -77,6 +83,7 @@ def listar_ativas(data_ref: date) -> list[Recorrencia]:
         WHERE data_inicio <= ? AND (data_fim IS NULL OR data_fim >= ?);""", (data_ref.isoformat(), data_ref.isoformat()))
         return [_row_para_recorrencia(row) for row in cursor.fetchall()]
 
+# Listagem geral das recorrencias de ordenação ascendente pelo dia em que ela reinicia
 def listar_todas() -> list[Recorrencia]: 
     with closing(conectar()) as conexao: 
         cursor = conexao.cursor()

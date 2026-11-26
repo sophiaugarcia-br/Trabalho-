@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 from typing import Literal
 
+"""  Este arquivo cria a classe (molde) 'Categoria' para todo dado (objeto) que é uma categoria, cujo qual tem um nome, tipo, cor e id
+     (ex: 'Alimentação', 'SAIDA', '#FFFFFF', 1). Isso serve para definir e aceitar universalmente, em variáveis daquela categoria, apenas
+      um tipo de dado por atributo.  """
+
 @dataclass
 class Categoria: 
     nome: str
@@ -10,21 +14,21 @@ class Categoria:
 
     def __post_init__(self):
 
-        # Categoria.tipo
+        # Categoria.tipo: verificação e validação
         if not isinstance(self.tipo, str):
             raise TypeError("Categoria.tipo deve existir e ser do tipo 'str'.")
         self.tipo = self.tipo.strip().upper() # type: ignore
         if self.tipo not in ("ENTRADA", "SAIDA"): 
             raise ValueError(f"Tipo inválido: '{self.tipo}'. Use 'ENTRADA' ou 'SAIDA'.")
 
-        # Categoria.nome
+        # Categoria.nome: verificação e validação
         if not isinstance(self.nome, str):
             raise TypeError(f"Categoria.nome deve ser declarado e ser uma string.")
         self.nome = self.nome.strip()
         if not self.nome:
             raise ValueError("Categoria.nome não pode ficar vazio.")
 
-        # Categoria.cor
+        # Categoria.cor: verificação e validação
         if not isinstance(self.cor, str):
             raise TypeError(f"Categoria.cor não pode ter valor vazio e deve ser string.")
         self.cor = self.cor.strip().upper()
@@ -34,7 +38,7 @@ class Categoria:
             if caractere not in ('0123456789ABCDEF'): 
                 raise ValueError(f"'{self.cor}' não corresponde a uma cor rgb em hexadecimal (ex. '#FFFFFF').")
 
-        # Categoria.id
+        # Categoria.id: verificação e validação
         if self.id is not None: 
             if isinstance(self.id, str): 
                 try:
